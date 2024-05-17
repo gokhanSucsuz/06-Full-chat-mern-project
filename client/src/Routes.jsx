@@ -3,9 +3,9 @@ import { UserContext } from './UserContext'
 import RegisterAndLoginForm from './RegisterAndLoginForm'
 
 export const Routes = () => {
-    const { username, id } = useContext(UserContext)
+    const { username } = useContext(UserContext)
 
-    if (username) return "Logged in " + username
+    if (username) { return "Logged in " + username }
     return (
         <RegisterAndLoginForm />
     )

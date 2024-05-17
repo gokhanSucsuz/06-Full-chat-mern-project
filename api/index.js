@@ -31,7 +31,7 @@ const jwtSecret = process.env.JWT_SECRET;
 const bcryptSalt = bcrypt.genSaltSync(10);
 
 app.get("/profile", (req, res) => {
-	const token = req.cookies?.token;
+	const { token } = req.cookies?.token;
 	if (token) {
 		jwt.verify(token, jwtSecret, {}, (err, userData) => {
 			if (err) throw err;
@@ -46,12 +46,25 @@ app.get("/profile", (req, res) => {
 app.post("/register", async (req, res) => {
 	const { username, password } = req.body;
 
+	// Kullanıcı adı ve şifre kontrolü
+	if (!username || !password) {
+		return res
+			.status(400)
+			.json({ message: "Username and password are required" });
+	}
+
 	try {
+		// Kullanıcı adı benzersiz mi kontrol et
+		const existingUser = await User.findOne({ username });
+		if (existingUser) {
+			return res.status(409).json({ message: "Username already exists" });
+		}
+
 		const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
 		// Kullanıcı oluştur
 		const createdUser = await User.create({
 			username,
-			password: bcrypt.hashedPassword,
+			password: hashedPassword,
 		});
 
 		// JWT oluştur
@@ -78,9 +91,24 @@ app.post("/register", async (req, res) => {
 	}
 });
 
-app.get("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
 	const { username, password } = req.body;
-	const foundUser = await User.find({ username });
+	const foundUser = await User.findOne({ username });
+	if (foundUser) {
+		const passOk = bcrypt.compareSync(password, foundUser.password);
+		if (passOk) {
+			jwt.sign(
+				{ userId: foundUser._id, username },
+				jwtSecret,
+				{},
+				(err, token) => {
+					res.cookie("token", token, { sameSite: "none", secure: true }).json({
+						id: foundUser._id,
+					});
+				}
+			);
+		}
+	}
 });
 
 // Test rotası

@@ -13,7 +13,7 @@ export default function RegisterAndLoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const url = isLoginOrRegister === "login" ? "/login" : "register"
+        const url = isLoginOrRegister === "login" ? "/login" : "/register"
         try {
             // Sunucuya POST isteği gönder
             const { data } = await axios.post(url, { username, password })
