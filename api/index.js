@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const User = require("./models/User.js");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs");
 
 dotenv.config();
 
@@ -15,22 +17,42 @@ mongoose.connect(process.env.MONGO_URL);
 
 // Middleware'ler
 app.use(express.json());
+app.use(cookieParser());
 app.use(
 	cors({
 		credentials: true,
 		origin: process.env.CLIENT_URL,
+		methods: ["GET", "POST"],
 	})
 );
 
 const jwtSecret = process.env.JWT_SECRET;
+
+const bcryptSalt = bcrypt.genSaltSync(10);
+
+app.get("/profile", (req, res) => {
+	const token = req.cookies?.token;
+	if (token) {
+		jwt.verify(token, jwtSecret, {}, (err, userData) => {
+			if (err) throw err;
+			res.json({ userData });
+		});
+	} else {
+		res.status(401).json("no code");
+	}
+});
 
 // "/register" rotası
 app.post("/register", async (req, res) => {
 	const { username, password } = req.body;
 
 	try {
+		const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
 		// Kullanıcı oluştur
-		const createdUser = await User.create({ username, password });
+		const createdUser = await User.create({
+			username,
+			password: bcrypt.hashedPassword,
+		});
 
 		// JWT oluştur
 		jwt.sign(
@@ -44,7 +66,7 @@ app.post("/register", async (req, res) => {
 					.cookie("token", token, { sameSite: "none", secure: true })
 					.status(201)
 					.json({
-						_id: createdUser._id,
+						id: createdUser._id,
 					});
 			}
 		);
@@ -54,6 +76,11 @@ app.post("/register", async (req, res) => {
 			.status(500)
 			.json({ message: "An error occurred while registering user" });
 	}
+});
+
+app.get("/login", async (req, res) => {
+	const { username, password } = req.body;
+	const foundUser = await User.find({ username });
 });
 
 // Test rotası
