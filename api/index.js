@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
+const ws = require("ws");
 
 dotenv.config();
 
@@ -31,14 +32,14 @@ const jwtSecret = process.env.JWT_SECRET;
 const bcryptSalt = bcrypt.genSaltSync(10);
 
 app.get("/profile", (req, res) => {
-	const { token } = req.cookies?.token;
+	const token = req.cookies?.token;
 	if (token) {
 		jwt.verify(token, jwtSecret, {}, (err, userData) => {
 			if (err) throw err;
-			res.json({ userData });
+			res.json(userData);
 		});
 	} else {
-		res.status(401).json("no code");
+		res.status(401).json("no token");
 	}
 });
 
@@ -121,3 +122,32 @@ const server = app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });
 
+const wss = new ws.WebSocketServer({ server });
+wss.on("connection", (connection, req) => {
+	const cookies = req.headers.cookie;
+	if (cookies) {
+		const tokenCookieString = cookies
+			.split(";")
+			.find((str) => str.startsWith("token="));
+		const token = tokenCookieString.split("=")[1];
+		if (token) {
+			jwt.verify(token, jwtSecret, {}, (err, userData) => {
+				if (err) throw err;
+				const { userId, username } = userData;
+				connection.userId = userId;
+				connection.username = username;
+			});
+		}
+	}
+
+	[...wss.clients].forEach((client) => {
+		client.send(
+			JSON.stringify({
+				online: [...wss.clients].map((c) => ({
+					userId: c.userId,
+					username: c.username,
+				})),
+			})
+		);
+	});
+});
