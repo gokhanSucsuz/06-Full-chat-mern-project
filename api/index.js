@@ -12,10 +12,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4040;
 
-// MongoDB'ye bağlan
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL);
 
-// Middleware'ler
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -42,11 +42,11 @@ app.get("/profile", (req, res) => {
 	}
 });
 
-// "/register" rotası
+// "/register" route
 app.post("/register", async (req, res) => {
 	const { username, password } = req.body;
 
-	// Kullanıcı adı ve şifre kontrolü
+	// Control username and password
 	if (!username || !password) {
 		return res
 			.status(400)
@@ -54,27 +54,27 @@ app.post("/register", async (req, res) => {
 	}
 
 	try {
-		// Kullanıcı adı benzersiz mi kontrol et
+		// Check username that unique is
 		const existingUser = await User.findOne({ username });
 		if (existingUser) {
 			return res.status(409).json({ message: "Username already exists" });
 		}
 
 		const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
-		// Kullanıcı oluştur
+		// Create User
 		const createdUser = await User.create({
 			username,
 			password: hashedPassword,
 		});
 
-		// JWT oluştur
+		// Create JWT
 		jwt.sign(
 			{ userId: createdUser._id, username },
 			jwtSecret,
 			{},
 			(err, token) => {
 				if (err) throw err;
-				// Çerez oluştur ve yanıtı gönder
+				// Set cookie and send response
 				res
 					.cookie("token", token, { sameSite: "none", secure: true })
 					.status(201)
@@ -111,12 +111,13 @@ app.post("/login", async (req, res) => {
 	}
 });
 
-// Test rotası
+// Test route
 app.get("/test", (req, res) => {
 	res.json({ message: "Test route OK" });
 });
 
-// Sunucuyu dinle
-app.listen(PORT, () => {
+// Listen server
+const server = app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });
+
