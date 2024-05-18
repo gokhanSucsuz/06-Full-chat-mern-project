@@ -124,6 +124,7 @@ const server = app.listen(PORT, () => {
 
 const wss = new ws.WebSocketServer({ server });
 wss.on("connection", (connection, req) => {
+	//Read username and id from the cookie for this connection
 	const cookies = req.headers.cookie;
 	if (cookies) {
 		const tokenCookieString = cookies
@@ -139,7 +140,12 @@ wss.on("connection", (connection, req) => {
 			});
 		}
 	}
+	connection.on("message", (message) => {
+		const messageData = JSON.parse(message.toString());
+		console.log(messageData.text);
+	});
 
+	//Notify everyone about online users (when someone connects)
 	[...wss.clients].forEach((client) => {
 		client.send(
 			JSON.stringify({
