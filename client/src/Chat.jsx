@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "./UserContext"
 import axios from "axios";
 import { Avatar } from "./Avatar";
@@ -11,6 +11,8 @@ export const Chat = () => {
     const [selectedUserId, setSelectedUserId] = useState(null)
     const { username, id } = useContext(UserContext)
     const [newMessageText, setNewMessageText] = useState("")
+    const [messages, setMessages] = useState([])
+    const messageRef = useRef();
 
     useEffect(() => {
         const ws = new WebSocket("ws://localhost:4040");
@@ -52,7 +54,11 @@ export const Chat = () => {
         const messageData = JSON.parse(e.data)
         if ("online" in messageData) {
             showOnlinePeople(messageData.online)
+        } else {
+            console.log(messageData.text)
+            setMessages(prev => [...prev, { ...messageData }])
         }
+
     }
 
     const handleMessageSubmit = (e) => {
@@ -61,7 +67,19 @@ export const Chat = () => {
             recipient: selectedUserId,
             text: newMessageText,
         }))
+        setNewMessageText("")
+        setMessages(prev => [...prev, {
+            text: newMessageText,
+            sender: id,
+            recipient: selectedUserId,
+        }])
     }
+
+    useEffect(() => {
+        const ref = messageRef.current;
+        if (ref) ref.scrollIntoView({ behavior: "smooth", block: "end" })
+
+    }, [messages])
 
     return (
         <div className="flex h-screen">
@@ -83,8 +101,6 @@ export const Chat = () => {
             </div>
             <div className="flex flex-col bg-orange-50 w-2/3 p-2">
                 <div className="flex-grow">
-
-
                     {
                         !selectedUserId && (
                             <div className="flex flex-grow p-2 bg-orange-100 items-center justify-center h-full rounded-sm">
@@ -94,8 +110,33 @@ export const Chat = () => {
                             </div>
                         )
                     }
+                    {
+                        !!selectedUserId && (
+                            <div className="relative h-full">
+                                <div className="gap-2 overflow-y-scroll absolute top-0 left-0 right-0 bottom-2">
+                                    {
+                                        messages?.map((message, index) =>
 
+                                            <div key={index} className={` ${message.sender === id ? "text-right" : ""}`}>
+                                                <div className=
+                                                    {`inline-block text-left p-2 my-2 rounded-md ${(message.sender === id ? "bg-orange-400 text-white p-4 w-fit" :
+                                                        "bg-rose-400 text-white p-4 w-fit")}`}
+                                                >
+                                                    sender: {message.sender} <br />
+                                                    id: {id} <br />
+                                                    {message.text}
+                                                </div>
+                                            </div>
 
+                                        )
+                                    }
+                                    <div ref={messageRef}></div>
+
+                                </div>
+
+                            </div>
+                        )
+                    }
                 </div>
                 {!!selectedUserId && (
                     <form className="flex gap-2 py-2" onSubmit={handleMessageSubmit}>
