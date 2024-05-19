@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "./UserContext"
 import axios from "axios";
-import { Avatar } from "./Avatar";
 import { Logo } from "./Logo";
 import { Contact } from "./Contact";
 
