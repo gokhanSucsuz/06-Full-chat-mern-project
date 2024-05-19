@@ -229,6 +229,3 @@ wss.on("connection", (connection, req) => {
 	notifyAboutOnlineUsers();
 });
 
-wss.on("close", (data) => {
-	console.log("disconnected", data);
-});
