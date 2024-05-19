@@ -155,6 +155,35 @@ const server = app.listen(PORT, () => {
 
 const wss = new ws.WebSocketServer({ server });
 wss.on("connection", (connection, req) => {
+	const notifyAboutOnlineUsers = () => {
+		[...wss.clients].forEach((client) => {
+			client.send(
+				JSON.stringify({
+					online: [...wss.clients].map((c) => ({
+						userId: c.userId,
+						username: c.username,
+					})),
+				})
+			);
+		});
+	};
+
+	connection.isAlive = true;
+
+	connection.timer = setInterval(() => {
+		connection.ping();
+		connection.deathTimer = setTimeout(() => {
+			connection.isAlive = false;
+			connection.terminate();
+			notifyAboutOnlineUsers();
+			console.log("dead");
+		}, 1000);
+	}, 5000);
+
+	connection.on("pong", () => {
+		clearTimeout(connection.deathTimer);
+	});
+
 	//Read username and id from the cookie for this connection
 	const cookies = req.headers.cookie;
 	if (cookies) {
@@ -197,14 +226,9 @@ wss.on("connection", (connection, req) => {
 	});
 
 	//Notify everyone about online users (when someone connects)
-	[...wss.clients].forEach((client) => {
-		client.send(
-			JSON.stringify({
-				online: [...wss.clients].map((c) => ({
-					userId: c.userId,
-					username: c.username,
-				})),
-			})
-		);
-	});
+	notifyAboutOnlineUsers();
+});
+
+wss.on("close", (data) => {
+	console.log("disconnected", data);
 });
