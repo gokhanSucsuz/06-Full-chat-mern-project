@@ -6,7 +6,9 @@ import { Chat } from './Chat'
 export const Routes = () => {
     const { username } = useContext(UserContext)
 
-    if (username) { return <Chat /> }
+    if (username) {
+        return <Chat />
+    }
     return (
         <RegisterAndLoginForm />
     )

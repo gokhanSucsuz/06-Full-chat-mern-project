@@ -8,7 +8,7 @@ export default function RegisterAndLoginForm() {
     const [password, setPassword] = useState("")
     const [message, setMessage] = useState("") // Durum ekle
 
-    const [isLoginOrRegister, setIsLoginOrRegister] = useState("register")
+    const [isLoginOrRegister, setIsLoginOrRegister] = useState("login")
 
     const { setUsername: setLoggedInUsername, setId } = useContext(UserContext)
 
@@ -21,9 +21,9 @@ export default function RegisterAndLoginForm() {
 
             setLoggedInUsername(username)
             setId(data.id)
-            setMessage("Registration successful") // Başarı mesajı
+            setMessage("Registration successful")
         } catch (error) {
-            setMessage("Registration failed. Please try again" + error) // Hata mesajı
+            setMessage("Something will be wrong. Please try again...")
         }
     }
 
@@ -44,19 +44,20 @@ export default function RegisterAndLoginForm() {
                     {isLoginOrRegister === "register" && (
                         <div>
                             Already a member?
-                            <button onClick={() => setIsLoginOrRegister("login")}>Login here</button>
+                            <button onClick={() => setIsLoginOrRegister("login")} className="bg-orange-400 p-1 rounded-md text-white ml-1">Login here</button>
                         </div>
                     )}
                     {isLoginOrRegister === "login" && (
                         <div>
                             Do not have an account?
-                            <button onClick={() => setIsLoginOrRegister("register")}>Register here</button>
+                            <button onClick={() => setIsLoginOrRegister("register")} className="bg-orange-400 ml-1 p-1 rounded-md text-white">Register here</button>
                         </div>
                     )}
+
                 </div>
+                {message && <div className="bg-orange-400 rounded-md p-3 my-4 text-white">{message}</div>}
             </form>
-            {/* Durum mesajını göster */}
-            {message && <div>{message}</div>}
+
         </div>
     )
 }
