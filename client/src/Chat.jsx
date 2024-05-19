@@ -15,9 +15,14 @@ export const Chat = () => {
     const messageRef = useRef();
 
     useEffect(() => {
+        connectToWs();
+    }, [token]);
+
+    const connectToWs = () => {
         const ws = new WebSocket("ws://localhost:4040");
         setWs(ws);
         ws.addEventListener("message", handleMessage);
+        ws.addEventListener("close", () => console.log("closed"))
 
         // Profil bilgilerini çekme
         const fetchProfile = async () => {
@@ -39,7 +44,8 @@ export const Chat = () => {
             ws.removeEventListener("message", handleMessage);
             ws.close();
         };
-    }, [token]);
+    }
+
 
     const showOnlinePeople = (peopleArray) => {
         const people = {};
@@ -72,6 +78,7 @@ export const Chat = () => {
             text: newMessageText,
             sender: id,
             recipient: selectedUserId,
+            id: Date.now(),
         }])
     }
 
@@ -80,6 +87,15 @@ export const Chat = () => {
         if (ref) ref.scrollIntoView({ behavior: "smooth", block: "end" })
 
     }, [messages])
+
+    useEffect(() => {
+        if (selectedUserId) {
+            axios.get(`/messages/${selectedUserId}`).then((res) => {
+                setMessages(res.data)
+
+            })
+        }
+    }, [selectedUserId])
 
     return (
         <div className="flex h-screen">
@@ -122,8 +138,6 @@ export const Chat = () => {
                                                     {`inline-block text-left p-2 my-2 rounded-md ${(message.sender === id ? "bg-orange-400 text-white p-4 w-fit" :
                                                         "bg-rose-400 text-white p-4 w-fit")}`}
                                                 >
-                                                    sender: {message.sender} <br />
-                                                    id: {id} <br />
                                                     {message.text}
                                                 </div>
                                             </div>
