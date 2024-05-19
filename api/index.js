@@ -143,6 +143,10 @@ app.post("/login", async (req, res) => {
 	}
 });
 
+app.post("/logout", (req, res) => {
+	res.cookie("token", "", { sameSite: "none", secure: true }).json("Ok");
+});
+
 // Test route
 app.get("/test", (req, res) => {
 	res.json({ message: "Test route OK" });
@@ -174,6 +178,7 @@ wss.on("connection", (connection, req) => {
 		connection.ping();
 		connection.deathTimer = setTimeout(() => {
 			connection.isAlive = false;
+			clearInterval(connection.timer);
 			connection.terminate();
 			notifyAboutOnlineUsers();
 			console.log("dead");
@@ -228,4 +233,3 @@ wss.on("connection", (connection, req) => {
 	//Notify everyone about online users (when someone connects)
 	notifyAboutOnlineUsers();
 });
-
