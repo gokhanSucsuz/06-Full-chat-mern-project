@@ -58,6 +58,11 @@ const getUserDataFromRequest = async (req) => {
 	});
 };
 
+app.get("/users", async (req, res) => {
+	const users = await User.find({}, { _id: 1, username: 1 });
+	res.json(users);
+});
+
 app.get("/messages/:userId", async (req, res) => {
 	const { userId } = req.params;
 	const userData = await getUserDataFromRequest(req);
@@ -184,7 +189,7 @@ wss.on("connection", (connection, req) => {
 							text,
 							sender: connection.userId,
 							recipient,
-							id: messageDoc._id,
+							_id: messageDoc._id,
 						})
 					)
 				);

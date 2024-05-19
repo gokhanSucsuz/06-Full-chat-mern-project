@@ -3,16 +3,19 @@ import { UserContext } from "./UserContext"
 import axios from "axios";
 import { Avatar } from "./Avatar";
 import { Logo } from "./Logo";
+import { Contact } from "./Contact";
 
 export const Chat = () => {
     const [ws, setWs] = useState(null)
     const { token } = useContext(UserContext);
     const [onlineUsers, setOnlineUsers] = useState({})
+    const [offlineUsers, setOfflineUsers] = useState({})
     const [selectedUserId, setSelectedUserId] = useState(null)
     const { username, id } = useContext(UserContext)
     const [newMessageText, setNewMessageText] = useState("")
     const [messages, setMessages] = useState([])
     const messageRef = useRef();
+
 
     useEffect(() => {
         connectToWs();
@@ -78,7 +81,7 @@ export const Chat = () => {
             text: newMessageText,
             sender: id,
             recipient: selectedUserId,
-            id: Date.now(),
+            _id: Date.now(),
         }])
     }
 
@@ -97,6 +100,22 @@ export const Chat = () => {
         }
     }, [selectedUserId])
 
+    useEffect(() => {
+        axios.get("/users").then(res => {
+            const offlineUsersArr = res.data.
+                filter(u => u._id !== id).
+                filter(p => !Object.keys(onlineUsers).includes(p._id))
+
+            const offlineUsers = {}
+            offlineUsersArr.forEach(p => {
+                offlineUsers[p._id] = p;
+
+            })
+            console.log({ offlineUsers, offlineUsersArr })
+            setOfflineUsers(offlineUsers)
+        })
+    }, [onlineUsers])
+
     return (
         <div className="flex h-screen">
             <div className="bg-white w-1/3 pl-4">
@@ -104,16 +123,30 @@ export const Chat = () => {
 
                 {Object.keys(onlineUsers).filter(user => (
                     user !== id ? username : ""
-                )).map(uId =>
-
-                (<div onClick={() => setSelectedUserId(uId)} key={uId} className={`border-b border-gray-100 flex gap-2 items-center cursor-pointer ${uId === selectedUserId ? "bg-orange-50" : ""}`}>
-                    {uId === selectedUserId && <div className="w-1 bg-orange-400 h-12 rounded-r-md"> </div>}
-                    <div className="flex gap-2 py-2 pl-4 items-center">
-                        <Avatar username={onlineUsers[uId]} userId={uId} />
-                        <span>{onlineUsers[uId]}</span>
-                    </div>
-                </div>)
+                )).map(uId => (
+                    <Contact key={uId}
+                        id={uId}
+                        username={onlineUsers[uId]}
+                        onClick={() => setSelectedUserId(uId)}
+                        selected={uId === selectedUserId}
+                        online={true}
+                    />
+                )
                 )}
+                {Object.keys(offlineUsers).filter(user => (
+                    user !== id ? username : ""
+                )).map(uId => (
+                    <Contact key={uId}
+                        id={uId}
+                        username={offlineUsers[uId].username}
+                        onClick={() => setSelectedUserId(uId)}
+                        selected={uId === selectedUserId}
+                        online={false}
+                    />
+                )
+                )}
+
+
             </div>
             <div className="flex flex-col bg-orange-50 w-2/3 p-2">
                 <div className="flex-grow">
