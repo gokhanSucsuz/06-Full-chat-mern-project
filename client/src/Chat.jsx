@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useContext, useEffect, useRef, useState } from "react"
 import { UserContext } from "./UserContext"
 import axios from "axios";
@@ -22,7 +23,7 @@ export const Chat = () => {
     }, [token]);
 
     const connectToWs = () => {
-        const ws = new WebSocket("ws://localhost:4040");
+        const ws = new WebSocket("ws://localhost:4040" | process.env.API_URL);
         setWs(ws);
         ws.addEventListener("message", handleMessage);
         ws.addEventListener("close", () => console.log("closed"))
