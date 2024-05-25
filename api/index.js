@@ -36,10 +36,6 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 
-module.exports = (req, res) => {
-	res.status(200).json({ message: "Hello, World!" });
-};
-
 app.get("/profile", (req, res) => {
 	const token = req.cookies?.token;
 	if (token) {
