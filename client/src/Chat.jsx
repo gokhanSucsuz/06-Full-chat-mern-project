@@ -23,7 +23,7 @@ export const Chat = () => {
     }, [token]);
 
     const connectToWs = () => {
-        const ws = new WebSocket("ws:https://06-full-chat-mern-project-api-server.vercel.app");
+        const ws = new WebSocket("ws:https://06-full-chat-mern-project-api-server.vercel.app/");
         setWs(ws);
         ws.addEventListener("message", handleMessage);
         ws.addEventListener("close", () => console.log("closed"))
