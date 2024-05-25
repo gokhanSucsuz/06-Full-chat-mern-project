@@ -10,7 +10,7 @@ const ws = require("ws");
 const fs = require("fs");
 const Message = require("./models/Message.js");
 
-dotenv.config({ path: ".env" });
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4040;
