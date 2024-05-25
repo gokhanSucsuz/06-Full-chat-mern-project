@@ -34,6 +34,10 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 
+app.use("/", (req, res) => {
+	res.send("Server is running");
+});
+
 app.get("/profile", (req, res) => {
 	const token = req.cookies?.token;
 	if (token) {
@@ -150,7 +154,7 @@ app.post("/logout", (req, res) => {
 });
 
 // Test route
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
 	res.json({ message: "Test route OK" });
 });
 
