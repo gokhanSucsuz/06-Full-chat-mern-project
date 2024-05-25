@@ -11,28 +11,5 @@
 			"src": "/api/(.*)",
 			"dest": "/api/"
 		}
-	],
-	"headers": [
-		{
-			"source": "/api/(.*)",
-			"headers": [
-				{ "key": "Access-Control-Allow-Origin", "value": "*" },
-				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
-			]
-		},
-		{
-			"source": "/client/(.*)",
-			"headers": [
-				{ "key": "Access-Control-Allow-Origin", "value": "*" },
-				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
-			]
-		},
-		{
-			"source": "/(.*)",
-			"headers": [
-				{ "key": "Access-Control-Allow-Origin", "value": "*" },
-				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
-			]
-		}
 	]
 }
