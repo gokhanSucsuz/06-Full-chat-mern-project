@@ -24,9 +24,7 @@ app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
 	cors({
-		origin: "*",
-		methods: "*",
-		allowedHeaders: ["Content-Type", "Authorization"],
+		origin: "https://06-full-chat-mern-project-wtln.vercel.app",
 		credentials: true,
 	})
 );
