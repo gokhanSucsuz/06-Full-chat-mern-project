@@ -18,15 +18,19 @@ const PORT = process.env.PORT || 4040;
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL);
 
-// Middlewares
-app.use(cors());
-app.options("*", cors());
+// CORS Configuration
+const corsOptions = {
+	origin: "https://zero6-full-chat-mern-project-frontend.onrender.com",
+	credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 const jwtSecret = process.env.JWT_SECRET;
-
 const bcryptSalt = bcrypt.genSaltSync(10);
 
 app.use("/", (req, res) => {
@@ -75,11 +79,9 @@ app.get("/messages/:userId", async (req, res) => {
 	res.json(messages);
 });
 
-// "/register" route
 app.post("/register", async (req, res) => {
 	const { username, password } = req.body;
 
-	// Control username and password
 	if (!username || !password) {
 		return res
 			.status(400)
@@ -87,27 +89,23 @@ app.post("/register", async (req, res) => {
 	}
 
 	try {
-		// Check username that unique is
 		const existingUser = await User.findOne({ username });
 		if (existingUser) {
 			return res.status(409).json({ message: "Username already exists" });
 		}
 
 		const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
-		// Create User
 		const createdUser = await User.create({
 			username,
 			password: hashedPassword,
 		});
 
-		// Create JWT
 		jwt.sign(
 			{ userId: createdUser._id, username },
 			jwtSecret,
 			{},
 			(err, token) => {
 				if (err) throw err;
-				// Set cookie and send response
 				res
 					.cookie("token", token, { sameSite: "none", secure: true })
 					.status(201)
@@ -148,12 +146,10 @@ app.post("/logout", (req, res) => {
 	res.cookie("token", "", { sameSite: "none", secure: true }).json("Ok");
 });
 
-// Test route
 app.get("/test", (req, res) => {
 	res.json({ message: "Test route OK" });
 });
 
-// Listen server
 const server = app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });
@@ -190,7 +186,6 @@ wss.on("connection", (connection, req) => {
 		clearTimeout(connection.deathTimer);
 	});
 
-	//Read username and id from the cookie for this connection
 	const cookies = req.headers.cookie;
 	if (cookies) {
 		const tokenCookieString = cookies
@@ -206,6 +201,7 @@ wss.on("connection", (connection, req) => {
 			});
 		}
 	}
+
 	connection.on("message", async (message) => {
 		const messageData = JSON.parse(message.toString());
 		const { recipient, text, file } = messageData;
@@ -224,7 +220,6 @@ wss.on("connection", (connection, req) => {
 				}
 			});
 		}
-		console.log(file);
 		if (recipient && (text || file)) {
 			const messageDoc = await Message.create({
 				sender: connection.userId,
@@ -249,6 +244,5 @@ wss.on("connection", (connection, req) => {
 		}
 	});
 
-	//Notify everyone about online users (when someone connects)
 	notifyAboutOnlineUsers();
 });
