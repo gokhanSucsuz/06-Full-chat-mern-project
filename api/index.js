@@ -25,7 +25,7 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
 	cors({
 		credentials: true,
-		origin: "https://06-full-chat-mern-project-wtln.vercel.app",
+		origin: process.env.CLIENT_URL,
 		methods: ["GET", "POST"],
 	})
 );
@@ -34,9 +34,9 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 
-app.use("/", (req, res) => {
-	res.send("Server is running");
-});
+// app.use("/", (req, res) => {
+// 	res.send("Server is running");
+// });
 
 app.get("/profile", (req, res) => {
 	const token = req.cookies?.token;

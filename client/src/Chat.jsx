@@ -128,10 +128,11 @@ export const Chat = () => {
         if (selectedUserId) {
             axios.get(`/messages/${selectedUserId}`).then((res) => {
                 setMessages(res.data)
-
             })
         }
-    }, [])
+    }, [selectedUserId])
+
+
 
     useEffect(() => {
         axios.get("/users").then(res => {
