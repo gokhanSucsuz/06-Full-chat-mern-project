@@ -22,8 +22,8 @@ mongoose.connect(process.env.MONGO_URL);
 app.use(
 	cors({
 		origin: [
-			"https://www.06-full-chat-mern-project-wtln.vercel.app",
-			"https://www.06-full-chat-mern-project-wtln.vercel.app/",
+			"https://zero6-full-chat-mern-project-api.onrender.com",
+			"https://zero6-full-chat-mern-project-api.onrender.com/",
 		],
 		credentials: true,
 	})
