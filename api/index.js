@@ -150,7 +150,7 @@ app.post("/logout", (req, res) => {
 });
 
 // Test route
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
 	res.json({ message: "Test route OK" });
 });
 
