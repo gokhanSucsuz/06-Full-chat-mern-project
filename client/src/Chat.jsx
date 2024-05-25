@@ -131,7 +131,7 @@ export const Chat = () => {
 
             })
         }
-    }, [selectedUserId])
+    }, [])
 
     useEffect(() => {
         axios.get("/users").then(res => {
