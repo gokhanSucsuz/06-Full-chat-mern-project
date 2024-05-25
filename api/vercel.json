@@ -21,7 +21,7 @@
 			]
 		},
 		{
-			"source": "/https://06-full-chat-mern-project-wtln.vercel.app/(.*)",
+			"source": "/https://06-full-chat-mern-project-api-server.vercel.app/login/(.*)",
 			"headers": [
 				{ "key": "Access-Control-Allow-Origin", "value": "*" },
 				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
