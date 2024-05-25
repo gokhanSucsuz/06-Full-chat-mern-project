@@ -34,9 +34,9 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 
-// app.use("/", (req, res) => {
-// 	res.send("Server is running");
-// });
+app.use("/", (req, res) => {
+	res.send("Server is running");
+});
 
 app.get("/profile", (req, res) => {
 	const token = req.cookies?.token;
