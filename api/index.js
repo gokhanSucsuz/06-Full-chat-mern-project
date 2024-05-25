@@ -16,7 +16,9 @@ const app = express();
 const PORT = process.env.PORT || 4040;
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL);
+mongoose.connect(
+	"mongodb+srv://fullstack-chat:xB154B5ILmZak8mH@cluster0.vekrbkd.mongodb.net/"
+);
 
 // Middlewares
 app.use(express.json());
