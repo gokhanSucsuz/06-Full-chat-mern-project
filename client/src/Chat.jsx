@@ -192,7 +192,7 @@ export const Chat = () => {
                         <img className="rounded-full w-10 h-10" src={ProfileImg} alt="profile" />
                         <div className="text-gray-500 font-semibold">
 
-                            Welcome <span className="text-orange-500 text-lg">{username.toUpperCase()}</span>
+                            Welcome <span className="text-orange-500 text-lg">{username?.toUpperCase()}</span>
                         </div>
                         <button onClick={logout} className="text-white bg-orange-500 py-1 px-2 border rounded-md text-md">Logout</button>
                     </div>
