@@ -14,14 +14,14 @@
 	],
 	"headers": [
 		{
-			"source": "/client/(.*)",
+			"source": "/api/(.*)",
 			"headers": [
 				{ "key": "Access-Control-Allow-Origin", "value": "*" },
 				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
 			]
 		},
 		{
-			"source": "/https://06-full-chat-mern-project-api-server.vercel.app/login/(.*)",
+			"source": "/client/(.*)",
 			"headers": [
 				{ "key": "Access-Control-Allow-Origin", "value": "*" },
 				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
