@@ -22,17 +22,7 @@ mongoose.connect(process.env.MONGO_URL);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
-app.use(
-	cors({
-		credentials: true,
-		origin: [
-			process.env.CLIENT_URL,
-			"https://06-full-chat-mern-project-wtln.vercel.app",
-			"https://06-full-chat-mern-project-api-server.vercel.app",
-		],
-		methods: ["GET", "POST"],
-	})
-);
+app.use(cors());
 
 const jwtSecret = process.env.JWT_SECRET;
 
