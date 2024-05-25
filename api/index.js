@@ -16,7 +16,9 @@ const app = express();
 const PORT = process.env.PORT || 4040;
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL);
+mongoose.connect(
+	"https://downloads.mongodb.com/compass/mongodb-compass-1.43.0-darwin-arm64.dmg"
+);
 
 // Middlewares
 app.use(express.json());
