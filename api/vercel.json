@@ -26,6 +26,13 @@
 				{ "key": "Access-Control-Allow-Origin", "value": "*" },
 				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
 			]
+		},
+		{
+			"source": "/(.*)",
+			"headers": [
+				{ "key": "Access-Control-Allow-Origin", "value": "*" },
+				{ "key": "Access-Control-Allow-Credentials", "value": "true" }
+			]
 		}
 	]
 }
