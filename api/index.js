@@ -16,9 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 4040;
 
 // Connect to MongoDB
-mongoose.connect(
-	"mongodb+srv://fullstack-chat:xB154B5ILmZak8mH@cluster0.vekrbkd.mongodb.net/"
-);
+mongoose.connect(process.env.MONGO_URL);
 
 // Middlewares
 app.use(express.json());
@@ -27,7 +25,7 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
 	cors({
 		credentials: true,
-		origin: "https://06-full-chat-mern-project-wtln.vercel.app/",
+		origin: process.env.CLIENT_URL,
 		methods: ["GET", "POST"],
 	})
 );
