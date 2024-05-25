@@ -25,7 +25,7 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
 	cors({
 		credentials: true,
-		origin: "https://06-full-chat-mern-project-wtln.vercel.app",
+		origin: "https://06-full-chat-mern-project-wtln.vercel.app/",
 		methods: ["GET", "POST"],
 	})
 );
