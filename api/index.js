@@ -19,18 +19,19 @@ const PORT = process.env.PORT || 4040;
 mongoose.connect(process.env.MONGO_URL);
 
 // Middlewares
-app.use(express.json());
-app.use(cookieParser());
-app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
 	cors({
 		origin: [
-			"https://06-full-chat-mern-project-wtln.vercel.app",
-			"https://06-full-chat-mern-project-wtln.vercel.app/",
+			"https://www.06-full-chat-mern-project-wtln.vercel.app",
+			"https://www.06-full-chat-mern-project-wtln.vercel.app/",
 		],
 		credentials: true,
 	})
 );
+app.use(express.json());
+app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads"));
+
 app.options("*", cors());
 
 const jwtSecret = process.env.JWT_SECRET;
