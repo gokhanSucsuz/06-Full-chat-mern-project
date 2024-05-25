@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 4040;
 
 // Connect to MongoDB
 mongoose.connect(
-	"https://downloads.mongodb.com/compass/mongodb-compass-1.43.0-darwin-arm64.dmg"
+	"mongodb+srv://fullstack-chat:xB154B5ILmZak8mH@cluster0.vekrbkd.mongodb.net/"
 );
 
 // Middlewares
