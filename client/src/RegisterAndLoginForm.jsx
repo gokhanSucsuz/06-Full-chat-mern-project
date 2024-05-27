@@ -17,8 +17,10 @@ export default function RegisterAndLoginForm() {
         const url = isLoginOrRegister === "login" ? "/login" : "/register"
         try {
             // Sunucuya POST isteği gönder
-            const { data } = await axios.post(url, { username, password })
-
+            const { data1 } = await axios.post(url, { username, password })
+            if (data1) {
+                var data = Array.from(data1)
+            }
             setLoggedInUsername(username)
             setId(data.id)
             setMessage("Registration successful")
