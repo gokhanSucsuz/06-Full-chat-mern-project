@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URL);
 
 // CORS Configuration
 const corsOptions = {
-	origin: ["https://zero6-full-chat-mern-project-frontend.onrender.com"],
+	origin: "https://zero6-full-chat-mern-project-frontend.onrender.com",
 	credentials: true
 };
 
