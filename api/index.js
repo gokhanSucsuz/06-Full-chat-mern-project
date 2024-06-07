@@ -20,8 +20,8 @@ mongoose.connect(process.env.MONGO_URL);
 
 // CORS Configuration
 const corsOptions = {
-	origin: "https://zero6-full-chat-mern-project-frontend.onrender.com",
-	credentials: true,
+	origin: "https://zero6-full-chat-mern-project-frontend.onrender.com/profile",
+	credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -89,7 +89,7 @@ app.get("/messages/:userId", async (req, res) => {
 	const ourUserId = userData.userId;
 	const messages = await Message.find({
 		sender: { $in: [userId, ourUserId] },
-		recipient: { $in: [userId, ourUserId] },
+		recipient: { $in: [userId, ourUserId] }
 	}).sort({ createdAt: 1 });
 	res.json(messages);
 });
@@ -112,7 +112,7 @@ app.post("/register", async (req, res) => {
 		const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
 		const createdUser = await User.create({
 			username,
-			password: hashedPassword,
+			password: hashedPassword
 		});
 
 		jwt.sign(
@@ -125,7 +125,7 @@ app.post("/register", async (req, res) => {
 					.cookie("token", token, { sameSite: "none", secure: true })
 					.status(201)
 					.json({
-						id: createdUser._id,
+						id: createdUser._id
 					});
 			}
 		);
@@ -149,7 +149,7 @@ app.post("/login", async (req, res) => {
 				{},
 				(err, token) => {
 					res.cookie("token", token, { sameSite: "none", secure: true }).json({
-						id: foundUser._id,
+						id: foundUser._id
 					});
 				}
 			);
@@ -177,8 +177,8 @@ wss.on("connection", (connection, req) => {
 				JSON.stringify({
 					online: [...wss.clients].map((c) => ({
 						userId: c.userId,
-						username: c.username,
-					})),
+						username: c.username
+					}))
 				})
 			);
 		});
@@ -240,7 +240,7 @@ wss.on("connection", (connection, req) => {
 				sender: connection.userId,
 				recipient,
 				text,
-				file: file ? filename : null,
+				file: file ? filename : null
 			});
 
 			[...wss.clients]
@@ -252,7 +252,7 @@ wss.on("connection", (connection, req) => {
 							sender: connection.userId,
 							recipient,
 							file: file ? filename : null,
-							_id: messageDoc._id,
+							_id: messageDoc._id
 						})
 					)
 				);
